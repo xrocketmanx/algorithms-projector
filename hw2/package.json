@@ -1,0 +1,18 @@
+{
+  "name": "hw2",
+  "version": "1.0.0",
+  "description": "To run programs use \"node program.js\"",
+  "main": "max_triangle.js",
+  "scripts": {
+    "max-triangle:file": "cat points.txt | node max_triangle.js",
+    "max-triangle": "node max_triangle.js",
+    "gen-points": "node gen_rand_points.js n=100",
+    "weapons": "node weapons.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.2.6"
+  },
+  "type": "module"
+}

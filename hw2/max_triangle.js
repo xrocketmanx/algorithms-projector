@@ -25,20 +25,16 @@ function parseInput(lines) {
 readLines((lines) => {
   const { pointsCount, points } = parseInput(lines);
 
-  console.log(`brute: ${solveBrute(pointsCount, points)}`);
-  console.log(`convex hull: ${solveConvexHull(pointsCount, points)}`);
+  console.log(solveConvexHull(pointsCount, points));
 });
 
 // Try every combination of 3 points, n^3
 function solveBrute(pointsCount, points) {
   let maxPerimeter = 0;
-  // Count iterations for comparing purposes of different approaches
-  let iterations = 0;
 
   for (let i = 0; i < pointsCount; i++) {
     for (let j = i + 1; j < pointsCount; j++) {
       for (let k = j + 1; k < pointsCount; k++) {
-        iterations++;
         const perimeter = trianglePerimeter(points[i], points[j], points[k]);
         if (perimeter > maxPerimeter) {
           maxPerimeter = perimeter;
@@ -47,7 +43,6 @@ function solveBrute(pointsCount, points) {
     }
   }
   
-  console.log(`iterations: ${iterations}`);
   return maxPerimeter;
 }
 

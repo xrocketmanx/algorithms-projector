@@ -1,5 +1,5 @@
 ## Prerequisite: node installed
-1. Max triangle perimeter - max_triangle.js
+1. Max triangle perimeter - max_triangle.js (Has brute force solution, convex hull and 2 other ideas that failed)
    - "npm run max-triangle:file" - reads input from points.txt
    - "npm run max-triangle" - reads input from cli
    - "npm run gen-points" - generates 100 random points and saves into points.txt

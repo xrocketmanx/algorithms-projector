@@ -10,16 +10,20 @@ function parseInput(lines) {
 readLines((lines) => {
   const { pointsCount, points } = parseInput(lines);
 
-  console.log(solveBrute(pointsCount, points));
+  console.log(`brute: ${solveBrute(pointsCount, points)}`);
+  console.log(`convex hull: ${solveConvexHull(pointsCount, points)}`);
 });
 
 // Try every combination of 3 points, n^3
 function solveBrute(pointsCount, points) {
   let maxPerimeter = 0;
+  // Count iterations for comparing purposes of different approaches
+  let iterations = 0;
 
   for (let i = 0; i < pointsCount; i++) {
     for (let j = i + 1; j < pointsCount; j++) {
       for (let k = j + 1; k < pointsCount; k++) {
+        iterations++;
         const perimeter = trianglePerimeter(points[i], points[j], points[k]);
         if (perimeter > maxPerimeter) {
           maxPerimeter = perimeter;
@@ -28,6 +32,7 @@ function solveBrute(pointsCount, points) {
     }
   }
   
+  console.log(`iterations: ${iterations}`);
   return maxPerimeter;
 }
 
@@ -39,7 +44,65 @@ function distance(pointA, pointB) {
   return Math.hypot(pointB[0] - pointA[0], pointB[1] - pointA[1]);
 }
 
-// Faster solution attempt 2. N^2 often gives correct answer, but occasionally only close to correct
+// I found this when I looked how to find "edge" points of a points set
+// We get convex hull verticles. We can skip all other points when looking for biggest triangles. 
+// This reduces complexity a lot for randomly distributed points.
+function solveConvexHull(pointsCount, points) {
+  const hull = convexHull(pointsCount, points);
+  return solveBrute(hull.length, hull);
+}
+
+// Points that create smallest polygon that wraps all other points
+// Jarvis algorithm - we choose left point and go counterclockwise
+function convexHull(pointsCount, points)
+{     
+  const hull = [];
+    
+  // Find the leftmost point
+  let left = 0;
+  for (let i = 1; i < pointsCount; i++) {
+    if (points[i][0] < points[left][0]) {
+      left = i;
+    }
+  }
+    
+  // We move counter clockwise starting from left point
+  let current = left;
+  let candidate;
+  do {
+    hull.push(points[current]);
+  
+    // Search for a point 'q' such that 
+    // orientation(p, q, x) is counterclockwise 
+    // for all points 'x'.
+    candidate = (current + 1) % pointsCount;
+        
+    for (let i = 0; i < pointsCount; i++)
+    {
+      // If i is more counterclockwise than 
+      // candidate we need to update candidate
+      if (orientation(points[current], points[i], points[candidate]) == 2) {
+        candidate = i;
+      }
+    }
+  
+    // Move to the next convex hull point
+    current = candidate;
+    
+  } while (current !== left);  // Moving until reach starting point
+
+  return hull;
+}
+
+// https://www.geeksforgeeks.org/orientation-3-ordered-points/
+function orientation(p, q, r)
+{
+  const val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1]);      
+  if (val == 0) return 0;  // collinear
+  return val > 0 ? 1 : 2; // clock or counterclock wise
+}
+
+// Faster solution failed attempt 2. N^2 often gives correct answer, but occasionally only close to correct
 function solveLongestLine(points) {
   let longestLine = [points[0], points[1]];
   let longestDistance = 0;

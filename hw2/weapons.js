@@ -5,7 +5,7 @@ function readInput(onEnd, regexp) {
     input += data.toString();
     if (input.match(regexp)) {
       onEnd(input);
-      process.stdin.destroy();
+      process.exit();
     }
   });
 }

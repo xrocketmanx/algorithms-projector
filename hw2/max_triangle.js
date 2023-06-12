@@ -1,30 +1,25 @@
-function readLines(onEnd) {
-  const allLines = [];
-
+function readPoints(onEnd) {
+  let pointsCount;
+  let points = [];
   process.stdin.on("data", data => {
-    const lines = data.toString().trim().split("\n");
+    let lines = data.toString().trim().split("\n");
+    if (!pointsCount) {
+      pointsCount = Number(lines[0]);
+      lines = lines.slice(1);
+    }
     for (const line of lines) {
       if (line.trim()) {
-        allLines.push(line.trim().split(" "))
+        points.push(line.trim().split(" ").map(n => Number(n)));
       }
     }
-  });
-  
-  process.stdin.on("end", () => {
-    onEnd(allLines);
+    if (points.length === pointsCount) {
+      onEnd({ pointsCount, points });
+      process.exit();
+    }
   });
 }
 
-function parseInput(lines) {
-  const pointsCount = parseInt(lines[0][0]);
-  const points = lines.slice(1).map(([x, y]) => [parseInt(x), parseInt(y)]);
-
-  return { pointsCount, points };
-}
-
-readLines((lines) => {
-  const { pointsCount, points } = parseInput(lines);
-
+readPoints(({ pointsCount, points }) => {
   console.log(solveConvexHull(pointsCount, points));
 });
 

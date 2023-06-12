@@ -1,4 +1,14 @@
-import { readInput } from "./read_input.js";
+function readInput(onEnd, regexp) {
+  let input = "";
+
+  process.stdin.on("data", data => {
+    input += data.toString();
+    if (input.match(regexp)) {
+      onEnd(input);
+      process.stdin.destroy();
+    }
+  });
+}
 
 const inputRegexp = /(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
 function parseInput(input) {

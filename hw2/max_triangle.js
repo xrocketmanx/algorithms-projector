@@ -1,4 +1,19 @@
-import { readLines } from "./read_input.js";
+function readLines(onEnd) {
+  const allLines = [];
+
+  process.stdin.on("data", data => {
+    const lines = data.toString().trim().split("\n");
+    for (const line of lines) {
+      if (line.trim()) {
+        allLines.push(line.trim().split(" "))
+      }
+    }
+  });
+  
+  process.stdin.on("end", () => {
+    onEnd(allLines);
+  });
+}
 
 function parseInput(lines) {
   const pointsCount = parseInt(lines[0][0]);

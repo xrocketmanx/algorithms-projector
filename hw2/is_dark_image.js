@@ -2,35 +2,27 @@ const N = 4096;
 
 function isDark(image) {
   let count = 0;
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < N; j++) {
+  for (let j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
       if (image[i][j] >= 128) {
         count += 1;
       }
     }
   }
 
-  return count < N * N / 2
+  return count < N * N / 2;
 }
 
-// Restructured to break early
 function isDarkOptimized(image) {
-  const threshold =  N * N / 2;
   let count = 0;
 
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
-      if (image[i][j] >= 128) {
-        count++;
-
-        if (count >= threshold) {
-          return false;
-        }
-      }
+      count += image[i][j] >> 7; // Works because we work with bytes 0 - 255
     }
   }
 
-  return true;
+  return count < N * N / 2;
 }
 
 function randNumber(min, max) {
@@ -38,11 +30,10 @@ function randNumber(min, max) {
 }
 
 const image = [];
-const colorsMax = 255 * 255 * 255;
 for (let i = 0; i < N; i++) {
   image.push([]);
   for (let j = 0; j < N; j++) {
-    image[i].push(randNumber(0, colorsMax));
+    image[i].push(randNumber(0, 255));
   }
 }
 
